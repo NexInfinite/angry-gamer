@@ -14,7 +14,7 @@ class Admin(commands.Cog, name="Main Commands"):
     @commands.command(name="addadmin")
     async def add_admin(self, ctx, user: discord.User):
         """Adda adadadmin"""
-        if ctx.author.id == 737259502646198354:
+        if ctx.author.id == 737259502646198354:  # Make sure to change this to your id, this is just to make it so only I can add admins
             admins = open_json("Cog/admin/Cog/admin/admins.json")
             for admin in admins:
                 if admin['user_id'] == user.id:
