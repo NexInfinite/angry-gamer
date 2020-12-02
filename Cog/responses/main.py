@@ -51,7 +51,7 @@ class Angry(commands.Cog, name="Response Commands"):
             "pingers": ['Who did it? I\'ll ping them back', 'I don\'t like this', 'All I can see is pings', 'Pong!!111!11!', 'Guys you can turn of pings in the notification settings for this server!', 'Please no not another ping....'],
             "cursed": ['Please don\'t curse us anymore', 'No, not 2020. Please no', 'I heard the aliens are up next', 'Whats 2020?', 'Oh god, what have you done?'],
             "cringed": ['MY KIDS LOVE MINIONS AS WELL!!!!', 'Are you also anti-vax? I don\' want my son to get autism!', '#flatEarthSociety', 'Trump 2020'],
-            "sexy": ['hot', 'mmmmmm', 'tasty', 'Yo, can I get sum?', 'Give me... now!', 'I do love some of that', 'I\'m gonna cum', 'Yes please!', 'I\'ll have what they\'re having', 'How much?', 'Is there any left?', 'tickling the pickle', 'I\'m starting to become horny not angry'],
+            "sexy": ['hot', 'mmmmmm', 'tasty', 'Yo, can I get sum?', 'Give me... now!', 'I do love some of that', 'I\'m gonna cum', 'Yes please!', 'I\'ll have what they\'re having', 'How much?', 'Is there any left?'],
             "ews": ['ewwww', 'ucky', 'me no likey', 'I\'m gonna be sick', 'Why would you say that?', 'cock is better btw']
         }
 
