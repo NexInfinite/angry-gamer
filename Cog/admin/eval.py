@@ -1,10 +1,21 @@
 import ast
 import discord
+import asyncio
 from tokens import *
 import json_commands as jc
 
 from discord.ext import commands
+from functools import wraps, partial
 
+
+def async_wrap(func):
+    @wraps(func)
+    async def run(*args, loop=None, executor=None, **kwargs):
+        if loop is None:
+            loop = asyncio.get_event_loop()
+        pfunc = partial(func, *args, **kwargs)
+        return await loop.run_in_executor(executor, pfunc)
+    return run 
 
 def insert_returns(body):
     # insert return stmt if the last expression is a expression statement
@@ -27,6 +38,7 @@ class Eval(commands.Cog, name="Eval Commands"):
 
     def __init__(self, bot):
         self.bot = bot
+        self.ctx = None
         self.values = []
 
     @commands.command()
@@ -37,10 +49,15 @@ class Eval(commands.Cog, name="Eval Commands"):
             if admin['user_id'] == ctx.author.id:
                 fn_name = "_eval_expr"
 
-                cmd = cmd.strip("` ")
+                cmds = cmd.strip("` ")
 
                 # add a layer of indentation
-                cmd = "\n".join(f"    {i}" for i in cmd.splitlines())
+                full = []
+                for line in cmds.splitlines():
+                    if line.startswith("print"):
+                        full.append(f"await {line}")
+                    full.append(line)
+                cmd = "\n".join(f"    {i}" for i in full)
 
                 # wrap in async def body
                 body = f"async def {fn_name}():\n{cmd}"
@@ -50,46 +67,48 @@ class Eval(commands.Cog, name="Eval Commands"):
 
                 insert_returns(body)
 
+                self.ctx = ctx
+
+                async def custom_print(value):
+                    await ctx.send(value)
+
                 env = {
                     'bot': ctx.bot,
                     'discord': discord,
                     'commands': commands,
                     'ctx': ctx,
                     '__import__': __import__,
-                    'print': self.custom_print
+                    'print': custom_print,
+                    'reload': lambda: self.reload_bot(ctx),
+                    'change_status': self.change_status
                 }
                 exec(compile(parsed, filename="<ast>", mode="exec"), env)
 
-                result = (await eval(f"{fn_name}()", env))
-                if result is not None:
-                    if TOKEN in result:
-                        await ctx.send("This output contains sensitive information, therefore it has been ctrl alt deleted")
-                        return
-                else:
-                    for value in self.values:
+                try:
+                    result = (await eval(f"{fn_name}()", env))
+                except Exception as e:
+                    result = e
+                    await ctx.send(e)
+                    return
+                for value in self.values:
+                    try:
                         if TOKEN in value:
                             await ctx.send("This output contains sensitive information, therefore it has been ctrl alt deleted")
                             return
-                try:
-                    try:
-                        await ctx.send(result)
-                        if self.values:
-                            values = "\n".join(self.values)
-                            await ctx.send(values)
-                    except Exception as e:
-                        if self.values:
-                            values = "\n".join(self.values)
-                            await ctx.send(values)
-                        else:
-                            await ctx.send(e)
-                except Exception as e:
-                    await ctx.send(e)
-                self.values = []
+                    except:
+                        pass
                 return
         await ctx.send("YOu're bnot an admins!!!!11!!?!?!?....,,.,.,.,.,.,.,. a a a a a a a a a a a")
 
-    def custom_print(self, value):
-        self.values.append(f"\> {value}")
+    async def change_status(self, status):
+        await self.bot.change_presence(activity=discord.Game(name=status))
+        await self.ctx.send(f"Change status to `playing {status}`")
+    
+
+    async def reload_bot(self, ctx):
+        await ctx.send("reloading...")
+        await self.bot.logout()
+        await self.bot.login()
 
 
 def setup(bot):

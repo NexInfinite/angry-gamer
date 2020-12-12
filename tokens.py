@@ -1,1 +1,1 @@
-TOKEN = "YOUR_TOKEN"
+TOKEN = "Haha Nice token!"

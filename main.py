@@ -37,8 +37,12 @@ async def gamer_loop():
     while True:
         rng = random.randint(0, 20)
         if rng == 0:
-            random_game = games[random.randint(0, len(games)-1)]
-            await bot.change_presence(activity=discord.Game(name=random_game))
+            member = ctx.guild.get_member(766970426231881778)
+            if member.activity not in games:
+                return
+            else:
+                random_game = games[random.randint(0, len(games)-1)]
+                await bot.change_presence(activity=discord.Game(name=random_game))
         await asyncio.sleep(60)
 
 

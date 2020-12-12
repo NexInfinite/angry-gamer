@@ -1,8 +1,13 @@
 import discord
+import time
 import random
+import datetime
 from discord.ext import commands
 
 from json_commands import *
+
+
+start_time = time.time()
 
 
 class Admin(commands.Cog, name="Main Commands"):
@@ -10,6 +15,14 @@ class Admin(commands.Cog, name="Main Commands"):
 
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.command(name="say")
+    async def say(self, ctx, *, message):
+        """say a message LoL!"""
+        if ctx.author.id == 737259502646198354:  # Make sure to change this to your id, this is just to make it so only I can say funniES
+            await ctx.channel.delete_messages([ctx.message])
+            await ctx.send(message)
+
 
     @commands.command(name="addadmin")
     async def add_admin(self, ctx, user: discord.User):
@@ -70,7 +83,7 @@ class Admin(commands.Cog, name="Main Commands"):
     @commands.command(name="list")
     async def list(self, ctx):
         """Get a list of all responses"""
-        responses = open_json("Cog/admin/angry_responses.json")
+        responses = open_json("Cog/responses/angry_responses.json")
         response_list = []
         for response in responses:
             response_list.append(f"- {response['response']}\n")
@@ -80,9 +93,27 @@ class Admin(commands.Cog, name="Main Commands"):
     async def stats(self, ctx):
         """Stunktunktists"""
         guilds = len(self.bot.guilds)
-        embed = discord.Embed(color=discord.Color.green())
-        embed.add_field(name="Guilds", value=f"{guilds}", inline=False)
-        await ctx.send(embed=embed)
+        ping = round(self.bot.latency * 1000, 1)
+        current_time = time.time()
+        difference = int(round(current_time - start_time))
+        uptime = str(datetime.timedelta(seconds=difference))
+        members = 0
+        for member in self.bot.get_all_members():
+            members += 1
+        responses_json = open_json("Cog/responses/angry_responses.json")
+        responses = 0
+        for response in responses_json:
+            responses += 1
+        admins_json = open_json("Cog/admin/admins.json")
+        admins = 0
+        for admin in admins_json:
+            admins += 1
+        await ctx.send(f"""> Guilds: {guilds}
+                           > Uptime: {uptime}
+                           > Members: {members} 
+                           > Ping: {ping}ms
+                           > Ping Responses: {responses}
+                           > Admins: {admins}""")
 
     @commands.command(name="admins")
     async def admins(self, ctx):
