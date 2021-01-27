@@ -11,4 +11,4 @@ Bot is from me, bot is funny. Bot was made late at night and bot is free. Bot is
 It responds to messages and things like that. It may or may not be gay. Maybe
 
 # What else
-Idk, I defenitly didnt add this so I could keep a streak on github. Naaaaaaaaah. Yeah this 100% wouldn't be me. There are updates coming soon btw. Verifications is a bitch. Grrrrr
+Idk, I defenitly didnt add this so I could keep a streak on github. Naaaaaaaaah. Yeah this 100% wouldn't be me. There are updates coming soon btw. Verifications is a bitch. Grrrrrrr
